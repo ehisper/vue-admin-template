@@ -10,14 +10,14 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      // '/nodeApi': {
-      //   target: 'http://127.0.0.1:3000',
-      //   changeOrigin:true
-      // },
-      // '/user': {
-      //   target: 'https://easy-mock.com/mock/5950a2419adc231f356a6636/vue-admin',
-      //   changeOrigin:true,
-      // }
+      '/nodeApi': {
+        target: 'http://127.0.0.1:3000',
+        changeOrigin:true
+      },
+      '/user': {
+        target: 'https://easy-mock.com/mock/5950a2419adc231f356a6636/vue-admin',
+        changeOrigin:true,
+      }
     },
     // Various Dev Server settings
     host: '192.168.25.191', // can be overwritten by process.env.HOST

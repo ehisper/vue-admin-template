@@ -10,8 +10,8 @@ export function getList(params) {
 
 export function getUserList() {
   return request({
-    // url: '/nodeApi/getUserList',
-    url: 'http://192.168.25.191:3000/nodeApi/getUserList',
+    url: '/nodeApi/getUserList',
+    // url: 'http://192.168.25.191:3000/nodeApi/getUserList',
     method: 'get'
   })
 }

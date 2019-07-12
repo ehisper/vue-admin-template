@@ -48,7 +48,8 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button @click="getUserDetail(scope.row.id)">编辑</el-button>
+          <el-button size="mini" @click="getUserDetail(scope.row.id)">编辑</el-button>
+          <el-button size="mini" @click="deleteUser(scope.row.id)" type="success">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -56,7 +57,7 @@
 </template>
 
 <script>
-import { getList, getUserList, getUserDetail } from '@/api/table'
+import { getList, getUserList, getUserDetail, deleteUser } from '@/api/table'
 
 export default {
   filters: {
@@ -108,6 +109,18 @@ export default {
         id
       }
       getUserDetail(params)
+        .then((res) => {
+          if (res.code === 20000) {
+            console.log('getUserDetail res.data', res.data)
+            alert(res.data.name)
+          }
+        })
+    },
+    deleteUser(id) {
+      var params = {
+        id
+      }
+      deleteUser(params)
         .then((res) => {
           if (res.code === 20000) {
             console.log('getUserDetail res.data', res.data)
