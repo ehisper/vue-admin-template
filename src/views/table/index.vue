@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-table
+    <!-- <el-table
       v-loading="listLoading"
       :data="list"
       element-loading-text="Loading"
@@ -38,12 +38,25 @@
           <span>{{ scope.row.display_time }}</span>
         </template>
       </el-table-column>
+    </el-table> -->
+    <el-table
+      :data="tableData"
+      border
+      style="width: 100%">
+      <el-table-column v-for="(item, index) in thList" :key="index" :prop="item.data" :label="item.label">
+        <template slot-scope="scope">{{ scope.row[item.data] }}</template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button @click="getUserDetail(scope.row.id)">编辑</el-button>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
-import { getList } from '@/api/table'
+import { getList, getUserList, getUserDetail } from '@/api/table'
 
 export default {
   filters: {
@@ -59,11 +72,20 @@ export default {
   data() {
     return {
       list: null,
-      listLoading: true
+      listLoading: true,
+      tableData: [],
+      thList: [
+        { label: 'id', data: 'id' },
+        { label: '姓名', data: 'name' },
+        { label: '性别', data: 'sex' },
+        { label: '年龄', data: 'age' },
+        { label: '分数', data: 'score' }
+      ]
     }
   },
   created() {
-    this.fetchData()
+    // this.fetchData()
+    this.getUserList()
   },
   methods: {
     fetchData() {
@@ -72,6 +94,26 @@ export default {
         this.list = response.data.items
         this.listLoading = false
       })
+    },
+    getUserList() {
+      getUserList()
+        .then((res) => {
+          if (res.code === 20000) {
+            this.tableData = res.data
+          }
+        })
+    },
+    getUserDetail(id) {
+      var params = {
+        id
+      }
+      getUserDetail(params)
+        .then((res) => {
+          if (res.code === 20000) {
+            console.log('getUserDetail res.data', res.data)
+            alert(res.data.name)
+          }
+        })
     }
   }
 }

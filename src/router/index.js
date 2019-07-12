@@ -142,6 +142,54 @@ export const constantRouterMap = [
     ]
   },
 
+  {
+    path: '/canvas',
+    component: Layout,
+    redirect: '/canvas/index',
+    name: 'canvas',
+    meta: { title: 'Canvas', icon: 'example' },
+    children: [
+      {
+        path: 'index',
+        name: 'index',
+        component: () => import('@/views/canvas/index'),
+        meta: { title: 'Canvas', icon: 'table' }
+      },
+      {
+        path: 'html2Canvas',
+        name: 'html2Canvas',
+        component: () => import('@/views/canvas/html2Canvas'),
+        meta: { title: 'html2Canvas', icon: 'form' }
+      }
+    ]
+  },
+
+  {
+    path: '/echarts',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Form',
+        component: () => import('@/views/echarts/index'),
+        meta: { title: 'echarts', icon: 'form' }
+      }
+    ]
+  },
+
+  {
+    path: '/gold',
+    component: Layout,
+    children: [
+      {
+        path: 'gold',
+        name: 'Form',
+        component: () => import('@/views/gold/index'),
+        meta: { title: 'gold', icon: 'form' }
+      }
+    ]
+  },
+
   { path: '*', redirect: '/404', hidden: true }
 ]
 
