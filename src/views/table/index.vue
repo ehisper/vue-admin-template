@@ -1,44 +1,6 @@
 <template>
   <div class="app-container">
-    <!-- <el-table
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      border
-      fit
-      highlight-current-row>
-      <el-table-column align="center" label="ID" width="95">
-        <template slot-scope="scope">
-          {{ scope.$index }}
-        </template>
-      </el-table-column>
-      <el-table-column label="Title">
-        <template slot-scope="scope">
-          {{ scope.row.title }}
-        </template>
-      </el-table-column>
-      <el-table-column label="Author" width="110" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Pageviews" width="110" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.pageviews }}
-        </template>
-      </el-table-column>
-      <el-table-column class-name="status-col" label="Status" width="110" align="center">
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="created_at" label="Display_time" width="200">
-        <template slot-scope="scope">
-          <i class="el-icon-time"/>
-          <span>{{ scope.row.display_time }}</span>
-        </template>
-      </el-table-column>
-    </el-table> -->
+    <el-button @click="dialogFormVisible = true" size="small">添加</el-button>
     <el-table
       :data="tableData"
       border
@@ -48,15 +10,39 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button @click="getUserDetail(scope.row.id)">编辑</el-button>
+          <span><el-button size="mini" @click="editUser(scope.row.id)">编辑</el-button></span>
+          <span><el-button type="success" size="mini " @click="deleteUser(scope.row.id)">删除</el-button></span>
         </template>
       </el-table-column>
     </el-table>
+    <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
+      <el-form :model="form"  label-position="right" ref="form">
+        <el-form-item label="姓名">
+          <el-input v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-select v-model="form.sex">
+            <el-option label="男" value="1"></el-option>
+            <el-option label="女" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="年龄">
+          <el-input v-model="form.age"></el-input>
+        </el-form-item>
+        <el-form-item label="分数">
+          <el-input v-model="form.score"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirmHandler">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getList, getUserList, getUserDetail } from '@/api/table'
+import { getList, getUserList, getUserDetail, deleteUser, addUser, updateUser } from '@/api/table'
 
 export default {
   filters: {
@@ -80,7 +66,14 @@ export default {
         { label: '性别', data: 'sex' },
         { label: '年龄', data: 'age' },
         { label: '分数', data: 'score' }
-      ]
+      ],
+      form: {
+        name: '',
+        sex: '男',
+        age: '',
+        score: ''
+      },
+      dialogFormVisible: false
     }
   },
   created() {
@@ -103,17 +96,61 @@ export default {
           }
         })
     },
-    getUserDetail(id) {
+    editUser(id) {
+      getUserDetail({id})
+      .then((res) => {
+        if (res.code === 20000) {
+          console.log('getUserDetail res.data', res.data)
+          this.form = res.data
+          this.dialogFormVisible = true
+        }
+      })
+    },
+    deleteUser(id) {
       var params = {
         id
       }
-      getUserDetail(params)
+      deleteUser(params)
         .then((res) => {
           if (res.code === 20000) {
-            console.log('getUserDetail res.data', res.data)
-            alert(res.data.name)
+            this.getUserList()
           }
         })
+    },
+    confirmHandler() {
+      if (this.form.id) {
+        updateUser(this.form)
+        .then((res) => {
+          if (res.code === 20000) {
+            // this.form = {}
+            // this.$refs['form'].resetFields();
+            this.form = {
+              name: '',
+              sex: '男',
+              age: '',
+              score: ''
+            }
+            this.getUserList()
+            this.dialogFormVisible = false
+          }
+        })
+      } else {
+        addUser(this.form)
+        .then((res) => {
+          if (res.code === 20000) {
+            // this.$refs['form'].resetFields();
+            this.form = {
+              name: '',
+              sex: '男',
+              age: '',
+              score: ''
+            }
+            this.getUserList()
+            this.dialogFormVisible = false
+          }
+        })
+      }
+      
     }
   }
 }
